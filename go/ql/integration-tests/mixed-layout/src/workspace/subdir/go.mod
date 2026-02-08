@@ -1,7 +1,7 @@
-go 1.22.0
+go 1.23.0
 
-require golang.org/x/net v0.23.0
+require golang.org/x/net v0.38.0
 
-require golang.org/x/sys v0.18.0 // indirect
+require golang.org/x/sys v0.31.0 // indirect
 
 module subdir
