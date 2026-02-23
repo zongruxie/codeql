@@ -34,6 +34,38 @@ private string getSingleLocationFilePath(@element e) {
     macroinvocations(e, _, loc, _)
     or
     preprocdirects(e, _, loc)
+    or
+    diagnostics(e, _, _, _, _, loc)
+    or
+    usings(e, _, loc, _)
+    or
+    static_asserts(e, _, _, loc, _)
+    or
+    derivations(e, _, _, _, loc)
+    or
+    frienddecls(e, _, _, loc)
+    or
+    comments(e, _, loc)
+    or
+    exprs(e, _, loc)
+    or
+    stmts(e, _, loc)
+    or
+    initialisers(e, _, _, loc)
+    or
+    attributes(e, _, _, _, loc)
+    or
+    attribute_args(e, _, _, _, loc)
+    or
+    namequalifiers(e, _, _, loc)
+    or
+    enumconstants(e, _, _, _, _, loc)
+    or
+    type_mentions(e, _, loc, _)
+    or
+    lambda_capture(e, _, _, _, _, _, loc)
+    or
+    concept_templates(e, _, loc)
   |
     result = getLocationFilePath(loc)
   )
@@ -65,16 +97,26 @@ overlay[local]
 private predicate isBase() { not isOverlay() }
 
 /**
+ * Holds if `path` was extracted in the overlay database.
+ */
+overlay[local]
+private predicate overlayHasFile(string path) {
+  isOverlay() and
+  files(_, path) and
+  path != ""
+}
+
+/**
  * Discards an element from the base variant if:
- * - It has a single location in a changed file, or
- * - All of its locations are in changed files.
+ * - It has a single location in a file extracted in the overlay, or
+ * - All of its locations are in files extracted in the overlay.
  */
 overlay[discard_entity]
 private predicate discardElement(@element e) {
   isBase() and
   (
-    overlayChangedFiles(getSingleLocationFilePath(e))
+    overlayHasFile(getSingleLocationFilePath(e))
     or
-    forex(string path | path = getMultiLocationFilePath(e) | overlayChangedFiles(path))
+    forex(string path | path = getMultiLocationFilePath(e) | overlayHasFile(path))
   )
 }
